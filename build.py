@@ -3,6 +3,7 @@ import pickle
 import requests
 import yfinance as yf
 import os
+import pandas as pd
 
 
 ## Save the list of 500 tickers from Wiki page
@@ -39,6 +40,29 @@ def get_data_from_yahoo(reload_sp500=False):
         else:
             print('Aleady have {}'.format(ticker))
 
-#get_data_from_yahoo()
+## Build all ticker main df 
+def compile_data():
+    with open('python-finance/sp500tickers.pickle', 'rb') as f:
+            tickers = pickle.load(f)
+    
+    main_df = pd.DataFrame()
 
-## Building a dataframe
+    for count,ticker in enumerate(tickers):
+        df = pd.read_csv('python-finance/datasets/{}.csv'.format(ticker))
+        df.set_index('Date', inplace=True)
+
+        df.rename(columns = {'Adj Close': ticker}, inplace=True)
+        df.drop(['Open','High','Low','Close','Volume'], 1, inplace=True)
+
+        if main_df.empty:
+            main_df = df
+        else:
+            main_df = main_df.join(df, how='outer')
+        
+        if count % 10 == 0:
+            print(count)
+    print(main_df.head())
+    main_df.to_csv('python-finance/sp500tickers_joined.csv')
+
+compile_data()
+## add error handling to skip the missing tickers 
