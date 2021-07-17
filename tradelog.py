@@ -10,10 +10,13 @@ df_final = df_drop.rename(columns={2:'Symb', 6:'Code', 8:'Date Time', 10:'Shares
 #df_final.to_csv('Trade.csv')
 
 # New DF to store the shares for each trade
-df_open_trades = pd.DataFrame(columns=['Symbol', 'Open Shares', 'Total Shares', 'Status'])
-print(df_open_trades)
-
+df_open_trades = pd.DataFrame(columns=['Symb', 'Open Shares', 'Total Shares', 'Status'])
+#print(df_open_trades)
 
 # Loop for counting shares
-#for index in df_final.index:
-#   print(df_final['Shares'][index])
+for each_symb in df_final['Symb'].unique():
+    print(each_symb)
+    #for row in df_final.index:
+    #    print(df_final['Symb'][row])
+
+#print(df_final['Symb'].unique())
